@@ -1,0 +1,15 @@
+{
+    "include": [
+      "next-env.d.ts",
+      "**/*.ts",
+      "**/*.tsx",
+      "**/**/*.ts",
+      "**/**/*.tsx",
+      "./src/*.ts",
+      "./src/*.tsx",
+    ],
+    "compilerOptions": {
+    "jsx": "react-jsx"
+  },
+    
+  }
