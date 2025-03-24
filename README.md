@@ -1,3 +1,13 @@
+# Attention
+This project there the same goals of the <a href="https://github.com/pauloismelo/skedow" target="_blank">Skedow Project</a> with improvements. 
+
+I needed to improve this code with the follow technologies bellow: 
+<ul>
+    <li>Redux Library - for manage states</li>
+    <li>Graphql - for improve requests</li>
+    <li>Jest - for create unity and integration tests</li>
+</ul>
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
