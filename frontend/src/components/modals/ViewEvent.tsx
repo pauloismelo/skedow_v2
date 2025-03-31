@@ -1,7 +1,6 @@
 import { Modal, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
-import Textarea from "../Textarea";
 import NewInteraction from "../forms/NewInteraction";
 
 function ViewEvent({showModal, handleCloseModal, selectedEvent}) {

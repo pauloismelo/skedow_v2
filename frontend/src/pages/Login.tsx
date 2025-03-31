@@ -1,15 +1,18 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+
 import Button from '../components/Button';
 import Input from '../components/Input';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+
 
 
 function Login() {
     const navigate = useNavigate();
-    const {login} = useContext(AuthContext)
+    const dispatch = useDispatch();
+
     const url_backend=process.env.REACT_APP_URL_BACKEND;
     const [data, setData] = useState<Record<string,string>>({});
 
@@ -18,20 +21,21 @@ function Login() {
     }
 
     const HandleSubmit = (e) =>{
-        
         e.preventDefault();
+        //console.log('login...', data);
         axios.post(url_backend+`/login`, data )
         .then((result)=>{
-            login(result.data.token);
+            
+            dispatch({type: 'LOGIN', token: result.data.token});
             toast.success(result.data.msg,{
                 theme: process.env.TOAST_THEME,
                 autoClose: 2500,
-                //chamar login do contexto
                 
                 onClose: () => navigate('/dashboard'),
             })
         })
         .catch(e=>{
+            console.log(e)
             toast.error('Try again!',{
                 theme: process.env.TOAST_THEME,
                 autoClose: 2500,

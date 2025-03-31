@@ -4,31 +4,52 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 
 
 import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+//import { useDispatch } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 
-import { Modal, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
+
 import ViewEvent from '../components/modals/ViewEvent';
 import CreateEvent from '../components/modals/CreateEvent';
-import axios from 'axios';
-
-import { toast, ToastContainer } from 'react-toastify';
+import { EventState } from '../store/types';
 
 
 function Dashboard() {
-    const {logout, events, setNewEvent} = useContext(AuthContext);
-    const filteredEvents = events.filter(event => new Date(event.start) > new Date);
-    const sortedEvents = filteredEvents.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    //const dispatch = useDispatch();
+    const url_backend=process.env.REACT_APP_URL_BACKEND;
+    const dispatch = useDispatch();
 
     const [showModalView, setshowModalView] = useState(false);
     const [showModalCreate, setshowModalCreate] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<any>(null);
+    const [events, setEvents] = useState<EventState>( {events: []} );
 
-    const url_backend=process.env.REACT_APP_URL_BACKEND;
+    
+    useEffect(() => {
+
+        axios.get(url_backend+`/events/events`)
+        .then((result)=>{
+            setEvents({ events: result.data});
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+    }, [])
+    
+
+    
+     //preciso chamar os eventos no backend
+    let sortedEvents = [];
+    if (events){
+        const filteredEvents = events.events.filter((event) => new Date(event.start) > new Date);
+        sortedEvents = filteredEvents.sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    }
+
     
     const handleEventClick = (clickInfo: any) => {
         setSelectedEvent(clickInfo.event);
@@ -50,7 +71,6 @@ function Dashboard() {
 
     const handleSubmitCreateEvent = (datasNewEvent) =>{
         
-        console.log(datasNewEvent);
         axios.post(url_backend+`/events/new`, datasNewEvent)
         .then((result)=>{
             
@@ -61,7 +81,7 @@ function Dashboard() {
                     onClose: handleCloseModalCreate,
                 })
                 
-                setNewEvent(result.data.event);
+                setEvents(result.data.event);
             }
         })
         .catch(error=>{
@@ -73,7 +93,7 @@ function Dashboard() {
     }
 
     const handleLogout = () =>{
-        logout();
+        dispatch({type: 'LOGOUT'});
     }
    
     // a custom render function
