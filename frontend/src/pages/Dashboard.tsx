@@ -31,7 +31,6 @@ function Dashboard() {
 
     
     useEffect(() => {
-
         axios.get(url_backend+`/events/events`)
         .then((result)=>{
             setEvents({ events: result.data});

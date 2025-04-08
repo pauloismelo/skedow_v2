@@ -22,10 +22,10 @@ function Login() {
 
     const HandleSubmit = (e) =>{
         e.preventDefault();
-        //console.log('login...', data);
+        console.log('login...', data);
         axios.post(url_backend+`/login`, data )
         .then((result)=>{
-            
+            console.log(result);
             dispatch({type: 'LOGIN', token: result.data.token});
             toast.success(result.data.msg,{
                 theme: process.env.TOAST_THEME,
@@ -35,17 +35,12 @@ function Login() {
             })
         })
         .catch(e=>{
-            console.log(e)
             toast.error('Try again!',{
                 theme: process.env.TOAST_THEME,
                 autoClose: 2500,
             })
-            console.log(e)
         })
-
-
-    }   
-
+    }
 
     return ( 
         <>

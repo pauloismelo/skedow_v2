@@ -19,6 +19,8 @@ app.use('/events', events);
 const mysql = require("mysql2")
 const db = require('./db/connection.js');
 
+const userController = require('./controllers/userController.js');
+
 
 
 
@@ -51,26 +53,26 @@ app.post('/register', (req,res)=>{
 
 })
 
-app.post('/login', (req,res)=>{
-    const {login, password} = req.body;
-
-    db.query(`select * from TB_USERS where login=?`, [login], (e,r)=>{
-        if (e) res.status(500).json({msg: 'Error in found login', type:'error'});
-        if (r){
-            if (r.length>0){
-                bcrypt.compare(password, r[0].password, function(err,resu){
-                    if (err) res.status(500).json({msg: 'passwords do not match', msg: 'error'})
-                    if (resu){
-                        const token= jwt.sign(r[0].id, SECRET);
-                        res.send({msg: "User authenticated!", type :'success', token: token})
-                    }
-                    
-                });
-            }else{
-                if (e) res.status(500).json({msg: 'Login not found', type:'error'});
-            }
+app.post('/login', async (req,res)=>{
+    const { login, password } = req.body;
+    try{
+        const user = await userController.getUserByLogin(login);
+        if (!user){
+            res.status(404).json({msg: 'User not found', type:'error'});
         }
-    })
+        const passwordMatch = await bcrypt.compare(password, user[0].password);
+
+        if (!passwordMatch){
+            res.status(401).json({msg: 'Invalid password', type:'error'});
+        }
+
+        const token = jwt.sign({ id: user[0].id }, SECRET, { expiresIn: '1d' });
+        res.json({ msg: 'User authenticated', type: 'success', token });
+    }catch(e){
+        console.log(e)
+        res.status(500).json({msg: 'Error in login', type:'error'});
+    }
+
 })
 
 
