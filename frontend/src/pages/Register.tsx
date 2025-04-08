@@ -27,11 +27,10 @@ function Register() {
             })
         })
         .catch(e=>{
-            toast.error(e.data.msg+'Try again!',{
+            toast.error(e.response.data.msg+' Try again!',{
                 theme: process.env.TOAST_THEME,
                 autoClose: 2500,
             })
-            console.log(e)
         })
         
     }   

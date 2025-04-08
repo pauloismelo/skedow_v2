@@ -21,36 +21,26 @@ const db = require('./db/connection.js');
 
 const userController = require('./controllers/userController.js');
 
-
-
-
 app.get('/test', (req,res)=>{
     console.log('arrived')
 })
 
-app.post('/register', (req,res)=>{
+app.post('/register', async (req,res)=>{
     const {login, password} = req.body;
-
-    db.query(`select id from TB_USERS where login=?`, [login], (e,r)=>{
-        if (r){
-            if (r.length>0){
-                res.status(500).json({msg: 'this login is unavailable. Try with other login', type: 'error'});
-            }else{
-                bcrypt.hash(password, 10, function(err, hash) {
-                    db.query(`insert into TB_USERS (login, password) values (?,?)`, [login, hash], (error, result)=>{
-                        if (error) res.status(500).json({msg: 'Error in insert new user', type: 'error'});
-                        if (result) res.status(200).json({msg: 'user inserted successfull', type: 'success'});
-                    });
-                });
-                
-            }
+    try{
+        const user = await userController.getUserByLogin(login);
+        if (user.length > 0){
+            res.status(500).json({msg: 'this login is unavailable', type:'error'});
+        }else{
+            console.log('nao encontrou!')
+            const hash = await bcrypt.hash(password, 10);
+    
+            const result = await userController.insertUser(login, hash);
+            if (result) res.status(200).json({msg: 'user inserted successfull', type: 'success'});
         }
-        if (e) {
-            res.status(500).json({msg: 'Error in find user with the same login', type: 'error'});
-        }
-
-    })
-
+    }catch(e){
+        res.status(500).json({msg: 'Error in register', type:'error'});
+    }
 })
 
 app.post('/login', async (req,res)=>{

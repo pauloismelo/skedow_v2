@@ -6,4 +6,9 @@ const getUserByLogin = async (login) => {
     return rows;
 }
 
-module.exports = {getUserByLogin};
+const insertUser = async (login, password) => {
+    const query = `INSERT INTO TB_USERS (login, password) VALUES (?, ?)`;
+    const [result] = await db.query(query, [login, password]);
+    return result.insertId;
+}
+module.exports = {getUserByLogin, insertUser};

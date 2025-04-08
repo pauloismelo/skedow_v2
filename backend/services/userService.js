@@ -4,4 +4,8 @@ const getUserByLogin = async (login) => {
     return await userRepository.getUserByLogin(login);
 }
 
-module.exports = {getUserByLogin};
+const insertUser = async (login, password) => {
+    return await userRepository.insertUser(login, password);
+}
+
+module.exports = {getUserByLogin, insertUser};

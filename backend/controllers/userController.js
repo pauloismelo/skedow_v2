@@ -9,4 +9,13 @@ const getUserByLogin = async (login) => {
     }
 }
 
-module.exports = {getUserByLogin};
+const insertUser = async (login, password) =>{
+    try{
+       const user = await userService.insertUser(login, password);
+       return user;
+    }catch(err){
+        throw err;
+    }
+}
+
+module.exports = {getUserByLogin, insertUser};
