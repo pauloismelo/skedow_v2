@@ -16,8 +16,6 @@ app.use(express.json());
 
 app.use('/events', events);
 
-const mysql = require("mysql2")
-const db = require('./db/connection.js');
 
 const userController = require('./controllers/userController.js');
 

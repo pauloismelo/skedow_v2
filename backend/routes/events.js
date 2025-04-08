@@ -13,6 +13,10 @@ const eventController = require('../controllers/eventControllers');
 
 router.get(`/events`, eventController.getEvent);
 
+router.get(`/new`, eventController.insertEvent);
+
+
+
 router.post(`/new`, (req,res)=>{
 
     const id = eventController.insertEvent(req.body);

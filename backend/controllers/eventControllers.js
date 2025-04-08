@@ -12,11 +12,11 @@ const getEvent= async (req, res) => {
 
 const insertEvent = async (req, res) => {
     try{
-        const id = await eventService.insertEvent(req.body);
-        res.json({msg: 'Event created successfully', id, type:'success'});
+        const newEvent = await eventService.insertEvent(req.body);
+        res.status(200).json({msg: 'Event created successfully', event: newEvent, type:'success'});
     }catch(err){
         console.log(err);
-        res.status(404).json({msg: err.message, type:'error'});
+        res.status(500).json({msg: err.message, type:'error'});
     }
 }
 
